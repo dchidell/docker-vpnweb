@@ -25,6 +25,8 @@ This service requires some minor customisation to use effectively.
 * Users can be added / removed without restarting the service
 * The file MUST have a newline at the end of the file!
 * User format is '<user>:*:<crypt password>' the asterisk and colons are required
+* This is NOT designed for security! Anybody who have access to the webgui can add themselves as a user!!
+* If security is a concern, limit access to the webgui at port 8080
 
 ## Certificates:
 * Default certs are self signed
