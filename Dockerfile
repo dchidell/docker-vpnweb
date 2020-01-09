@@ -26,5 +26,5 @@ COPY vpn-init.sh /vpn-init.sh
 COPY client_profile.xml /client_profile.xml
 COPY README.md /README.md
 RUN chmod a+x /vpn-init.sh
-ENTRYPOINT ["webproc","--on-exit","restart","-c","README.md","/users.conf","/vpn.conf","/vpn-init.sh","/client_profile.xml","/certs/server.crt","/certs/server.key","/certs/server.key.org","--","/vpn-init.sh","ocserv", "-c", "/vpn.conf", "-f","-d","4"]
+ENTRYPOINT ["webproc","--on-exit","restart","-c","README.md","users.conf","vpn.conf","vpn-init.sh","client_profile.xml","/certs/server.crt","/certs/server.key","/certs/server.key.org","--","/vpn-init.sh","ocserv", "-c", "/vpn.conf", "-f","-d","4"]
 EXPOSE 443 443/udp 8080
