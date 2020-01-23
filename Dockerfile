@@ -2,8 +2,7 @@ FROM centos:7 as build
 LABEL maintainer="David Chidell (dchidell@cisco.com)"
 
 FROM build as webproc
-ENV WEBPROC_VERSION 0.2.2
-ENV WEBPROC_URL https://github.com/jpillora/webproc/releases/download/$WEBPROC_VERSION/webproc_linux_amd64.gz
+ENV WEBPROC_URL https://github.com/jpillora/webproc/releases/download/v0.3.3/webproc_0.3.3_linux_amd64.gz
 RUN curl -sL $WEBPROC_URL | gzip -d - > /usr/local/bin/webproc
 RUN chmod +x /usr/local/bin/webproc
 
@@ -26,5 +25,5 @@ COPY vpn-init.sh /vpn-init.sh
 COPY client_profile.xml /client_profile.xml
 COPY README.md /README.md
 RUN chmod a+x /vpn-init.sh
-ENTRYPOINT ["webproc","--on-exit","restart","--config","/README.md,/users.conf,/vpn.conf,/vpn-init.sh,/client_profile.xml,/certs/server.crt,/certs/server.key,/certs/server.key.org","--","/vpn-init.sh","ocserv", "-c", "/vpn.conf", "-f","-d","4"]
+ENTRYPOINT ["webproc","--on-exit","restart","-s","continue","-c","/README.md","-c","/users.conf","-c","/vpn.conf","-c","/vpn-init.sh","-c","/client_profile.xml","-c","/certs/server.crt","-c","/certs/server.key","-c","/certs/server.key.org","--","/vpn-init.sh","ocserv", "-c", "/vpn.conf", "-f","-d","4"]
 EXPOSE 443 443/udp 8080
