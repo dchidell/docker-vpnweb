@@ -1,14 +1,15 @@
-FROM centos:7 as build
+FROM almalinux:8 as build
 LABEL maintainer="David Chidell (dchidell@cisco.com)"
 
 FROM build as webproc
-ENV WEBPROC_URL https://github.com/jpillora/webproc/releases/download/v0.3.3/webproc_0.3.3_linux_amd64.gz
-RUN curl -sL $WEBPROC_URL | gzip -d - > /usr/local/bin/webproc
+ENV WEBPROCVERSION 0.4.0
+ENV WEBPROCURL https://github.com/jpillora/webproc/releases/download/v$WEBPROCVERSION/webproc_"$WEBPROCVERSION"_linux_amd64.gz
+RUN curl -sL $WEBPROCURL | gzip -d - > /usr/local/bin/webproc
 RUN chmod +x /usr/local/bin/webproc
 
 FROM build
 
-RUN yum -y install epel-release && yum -y install ocserv &&  yum -y install openssl && yum clean all
+RUN dnf install -y epel-release && dnf install -y ocserv openssl && yum clean all
 RUN mkdir /certs \
     && cd /certs \
     && openssl rand -base64 48 > passphrase.txt \
@@ -25,5 +26,5 @@ COPY vpn-init.sh /vpn-init.sh
 COPY client_profile.xml /client_profile.xml
 COPY README.md /README.md
 RUN chmod a+x /vpn-init.sh
-ENTRYPOINT ["webproc","--on-exit","restart","-s","continue","-c","/README.md","-c","/users.conf","-c","/vpn.conf","-c","/vpn-init.sh","-c","/client_profile.xml","-c","/certs/server.crt","-c","/certs/server.key","-c","/certs/server.key.org","--","/vpn-init.sh","ocserv", "-c", "/vpn.conf", "-f","-d","4"]
+ENTRYPOINT ["webproc","-o","restart","-s","continue","-c","/README.md","-c","/users.conf","-c","/vpn.conf","-c","/vpn-init.sh","-c","/client_profile.xml","-c","/certs/server.crt","-c","/certs/server.key","-c","/certs/server.key.org","--","/vpn-init.sh","ocserv", "-c", "/vpn.conf", "-f","-d","4"]
 EXPOSE 443 443/udp 8080
